@@ -1,0 +1,39 @@
+version: '3'
+services:
+  nginx:
+    build:
+      context: ./docker-images/nginx
+      dockerfile: Dockerfile
+    volumes:
+      - ./public:/data/www
+      - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
+    ports:
+      - 8080:8080
+    #depends_on:
+    #  - graphql
+  graphql:
+    build:
+      context: ./docker-images/node
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=local
+      - MONGODB_PATH=mongodb://mongo:27017
+      - NASA_PLANTARY_URL=https://api.nasa.gov/planetary/apod
+      - NASA_API_KEY=jfvBItakDtawn65r9jGJXq3718y7RtolGCaNR9CG
+    volumes:
+      - ./graphql-server:/app
+    ports:
+      - 4000:4000
+    command: /bin/sh -c 'ls -al && npm i && npm run dev'
+  mongo:
+    build:
+      context: ./docker-images/mongodb
+      dockerfile: Dockerfile
+    volumes:
+      - db-data:/data/db
+    ports:
+      - "27017:27017"
+volumes:
+  dbdata: {}
+  db-data:
+  public: 

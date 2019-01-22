@@ -1,0 +1,22 @@
+{
+  "name": "graphql-server",
+  "version": "1.0.0",
+  "description": "GraphQL Server on top on Node.js",
+  "main": "server.js",
+  "scripts": {
+    "test": "test",
+    "dev": "node server.js"
+  },
+  "author": "Ali Kosar Hosseinkhani",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "express": "^4.16.4",
+    "express-graphql": "^0.7.1",
+    "graphql": "^14.0.2",
+    "mongodb": "^3.1.11"
+  },
+  "devDependencies": {
+    "faker": "^4.1.0"
+  }
+}
