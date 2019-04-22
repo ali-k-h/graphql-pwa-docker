@@ -9,8 +9,8 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
     ports:
       - 8080:8080
-    #depends_on:
-    #  - graphql
+    depends_on:
+      - graphql
   graphql:
     build:
       context: ./docker-images/node
@@ -22,18 +22,19 @@ services:
       - NASA_API_KEY=jfvBItakDtawn65r9jGJXq3718y7RtolGCaNR9CG
     volumes:
       - ./graphql-server:/app
+      - ./public/images/nasa:/app/images/nasa
     ports:
       - 4000:4000
-    command: /bin/sh -c 'ls -al && npm i && npm run dev'
+      - 5858:5858
+    command: /bin/sh -c 'npm i && npm run dev'
   mongo:
     build:
       context: ./docker-images/mongodb
       dockerfile: Dockerfile
-    volumes:
-      - db-data:/data/db
+   # volumes:
+    #  - db-data:/data/db  #it is to persist data for mongodb after container goes down
     ports:
       - "27017:27017"
-volumes:
-  dbdata: {}
-  db-data:
-  public: 
+#volumes:
+# db-data:
+# public:

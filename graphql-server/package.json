@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "test",
-    "dev": "node server.js"
+    "dev": "nodemon --inspect=0.0.0.0:5858 -L --watch /app server.js"
   },
   "author": "Ali Kosar Hosseinkhani",
   "license": "ISC",
@@ -14,7 +14,8 @@
     "express": "^4.16.4",
     "express-graphql": "^0.7.1",
     "graphql": "^14.0.2",
-    "mongodb": "^3.1.11"
+    "mongodb": "^3.1.11",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "faker": "^4.1.0"

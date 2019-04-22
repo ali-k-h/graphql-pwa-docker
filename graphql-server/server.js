@@ -1,10 +1,10 @@
-const { graphql, buildSchema } = require('graphql');
 const express = require('express');
 const graphqlHTTP = require('express-graphql');
 const app = express();
 const dataGenerator = require('./data_generator');
-const axios = require('axios');
 const mongoConnect  = require('./mongo_connect');
+const resolver = require('./resolver');
+const schema = require('./schema').getSchema();
 
 const start = async () => {
   try{
@@ -17,62 +17,32 @@ const start = async () => {
     });
 
     const db = await mongoConnect(process.env.MONGODB_PATH);
-    dataGenerator(db);
 
-    //API
-    var nasaApi = `${process.env.NASA_PLANTARY_URL}?api_key=${process.env.NASA_API_KEY}`;
-    axios.get(nasaApi).then((res) => {
-      console.log('%%%%Data from NASA ', res.data)
-    })
-
-    const schema = buildSchema(`
-      type Product {
-        name: String  
-        description: String
-        initialCost: String
-        zipcode:[String]
-      }
-
-      type Query {
-        getProducts (productType: String): [Product]
-      }
-      `);
-
-    // The root provides a resolver function for each API endpoint
-    const root = {
-      getProducts: ({productType}) => {
-        switch (productType) {
-          case 'sloar':
-          return [
-            {productType: 'solar', name:'low-energy', description:'produces low energy', weight:'2000lb'},
-            {productType: 'solar', name:'high-energy', description:'produces a lot of energy', weight:'4000lb'},
-            {productType: 'solar', name:'multi', description:'produces all sorts of energy', weight:'6000lb'},
-          ];
-            break;
-          default:
-          return [
-            {productType: 'solar', name:'low-energy', description:'produces low energy', weight:'2000lb'},
-            {productType: 'solar', name:'high-energy', description:'produces a lot of energy', weight:'4000lb'},
-            {productType: 'solar', name:'multi', description:'produces all sorts of energy', weight:'6000lb'},
-          ];
-        }
-      }
-    };
-
-    // app.use(/\/$/ , (req, res) => {
-    //   res.sendFile('Working on it...');
-    // })
-
-    app.use('/graphql', graphqlHTTP({
+    app.use('/graphql-tool', graphqlHTTP({
       schema: schema,
-      rootValue: root,
+      rootValue: resolver.root(db),
       graphiql: true,
     }));
-    app.use('/api', (req, res) => {
-      
+
+    app.use('/api', graphqlHTTP({
+      schema: schema,
+      rootValue: resolver.root(db),
+    }));
+
+    app.get('/gendata', async (req, res) =>{
+    //  try{
+      //  const response = await dataGenerator(db);
+      //  if(response){
+          res.send(await dataGenerator(db)?'Data is generated':'Sorry! not a very successful attempt!');
+      //  }
+      // }
+      // catch(e){
+      //   res.send(`Sorry! not a very successful attempt!${e}`);
+      // }
     });
+
     app.listen(4000, () => {
-      console.log('Running a GraphQL API server at localhost:4000/graphql');
+      console.log('Running a GraphQL API server at port 4000');
     });
   }
   catch(e){
@@ -81,4 +51,3 @@ const start = async () => {
 };
 
 start();
-
