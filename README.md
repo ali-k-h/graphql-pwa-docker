@@ -1,4 +1,4 @@
-#Enhanced Progressive
+#Progressive webapp powered with GraphQL on Docker
 This project has 2 ways to run it:
 * Standalone
 * Dockerized
