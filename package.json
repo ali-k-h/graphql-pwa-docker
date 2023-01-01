@@ -24,7 +24,7 @@
     "pem-jwk": "^2.0.0",
     "sw-precache": "^5.2.1",
     "tape": "^4.9.1",
-    "webpack": "^4.14.0",
-    "webpack-cli": "^3.0.8"
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
   }
 }
